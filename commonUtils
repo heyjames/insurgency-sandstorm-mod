@@ -3,7 +3,7 @@
 # Description ##################################################################
 # Helper functions and global variables
 
-source config.cfg
+source setEnvVars
 
 #USER_DIR=/home/xxxxx
 #SERVER_DIR=/home/xxxxx
