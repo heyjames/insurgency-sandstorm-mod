@@ -1,0 +1,3 @@
+gamemodeproperty ObjectiveCaptureTime 30
+say Current objective unlocked.
+echo -e "\n"

@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Purpose #########################################################
+# Reads each new line from the Insurgency Sandstorm server log file
+# Handles user connect/disconnects and global chat messages and 
+# outputs to respective log files.
+
+# Required Files ##################################################
+# userChat.log
+# userConnections.log
+
+# rconn($1), getSteamNameFromId
+source ../commonUtils
+LOGS_DIR=../logs
+
+# Default Insurgency Log File
+tail -n 0 -F $SERVER_LOG_DIR | \
+
+# Main loop
+while read -r LINE; do
+  date=$( TZ=America/Los_Angeles date +'%Y-%m-%d_%H:%M' )
+
+  # Regex Identifiers
+  chatMessage="LogChat: Display: "
+  userConnected="acknowledged scenario assets loaded."
+  userDisconnected="\[UnregisterClient\] Client: 0x([A-Za-z0-9_]*) PlayerGUID: "
+
+  # Handle chat messages
+  if [[ $LINE =~ $chatMessage ]]; then
+    echo "$LINE" >> $LOGS_DIR/userChat.log
+  fi
+
+  # Handle user connects
+  if [[ $LINE =~ $userConnected ]]; then
+    steamName=$( echo $LINE | grep -oP "'([^']*)'" | sed -e "s/^'//" -e "s/'$//" )
+    displayMsg="$steamName connected."
+
+    echo "[$date] $displayMsg" >> $LOGS_DIR/userConnections.log
+    rconn "say $displayMsg"
+  fi
+
+  # Handle user disconnects
+  if [[ $LINE =~ $userDisconnected ]]; then
+    steamId=$( echo $LINE | grep -oP "765\d*" )
+    steamName=$( getSteamNameFromId $steamId )
+    displayMsg="$steamName disconnected."
+
+    # Default steamName to Someone if getSteamNameFromId() fails
+    if [[ $steamName == "Someone" ]]; then
+      id="($steamId) "
+    fi
+
+    echo "[$date] ${id}${displayMsg}" >> $LOGS_DIR/userConnections.log
+    rconn "say $displayMsg"
+  fi
+done

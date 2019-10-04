@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Description ##################################################################
+# Sets the capture timer high to prevent players from capturing the objective 
+# and returns to normal capture time after the timer (which is hopefully) 
+# synced to the in-game round timer) is up.
+
+# rconn($1)
+source ../commonUtils
+
+# Set capture timer to a very long time (in seconds)
+rconn < ../config/lockObjective.txt
+echo -ne "\n"
+
+# 3 minute timer
+counter=180
+
+while [ $counter -gt 0 ]; do
+  echo -ne "\r$counter "
+  let counter=counter-1
+  sleep 1
+done
+
+# Set capture timer back to normal (in seconds)
+rconn < ../config/unlockObjective.txt
+echo -ne "\n"

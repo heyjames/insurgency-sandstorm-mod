@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Description ##################################################################
+# Easily type ./rconn gamemodeproperty MaximumEnemies 17
+# without typing the IP, port, etc.
+
+# Function(s) used: rconn(arg)
+source ../commonUtils
+
+rconn "$1"

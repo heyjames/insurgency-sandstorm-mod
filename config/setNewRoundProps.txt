@@ -1,0 +1,3 @@
+AIDifficulty 0
+gamemodeproperty MinimumEnemies 4
+gamemodeproperty MaximumEnemies 14

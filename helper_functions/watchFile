@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Purpose #############################################################
+# Easily watch a script update in real-time. Useful for viewing log
+# files, user connect/disconnect, chat messages when not in game.
+
+# $SERVER_LOG_DIR
+source ../commonUtils
+
+param=$1
+
+if [ "$param" == "inslog" ]; then
+  tail -n 0 -F $SERVER_LOG_DIR
+else
+  tail -n 0 -F $SERVER_LOG_DIR $param
+fi

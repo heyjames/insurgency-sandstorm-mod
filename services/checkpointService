@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Purpose ######################################################################
+# Insurgency: Sandstorm checkpoint co-op mode relies on capturing objectives
+# A, B, etc on each map. The capture timer game variable can be adjusted in
+# real-time via an rcon message. Since the game logs certain events in a log
+# file, certain events are captured to start a timer to prevent players from
+# capturing a point too fast--a playstyle that can cause teammates, who aren't
+# ready, to die from newly spawned enemies after an early capture. Locking the
+# objective helps the slower, tactical gameplay, server admins, and fosters the 
+# overall identity of the server, which seems to have an effect on attracting 
+# tactical players.
+
+# $SERVER_LOG_DIR, rconn($1), getNumPlayers
+source ../commonUtils
+
+HELPER_FUNC_DIR=../helper_functions
+
+# Locks the current objective by inceasing the timer and begins the countdown
+# as close to the timer at the bottom of the screen.
+function startTimer() {
+  # First arg is $extendTimer if beginning of round
+  $1
+  $HELPER_FUNC_DIR/countdown &
+
+  # Cancel Timer and set normal capture time if number of players is fewer than 2
+  numPlayers=$( getNumPlayers )
+  if [ $numPlayers -le 2 ]; then
+    $HELPER_FUNC_DIR/killTimer
+    rconn "gamemodeproperty ObjectiveCaptureTime 30"
+    echo -e "\n$numPlayers players detected. Timer killed. Normal checkpoint timer."
+  fi
+}
+
+# If timer was never stopped, stop it before this script begins.
+$HELPER_FUNC_DIR/killTimer
+
+tail -n 0 -F $SERVER_LOG_DIR | \
+
+while read -r LINE; do
+  # Regex Identifiers
+  preRound="Match State Changed from ([A-Za-z0-9_]*) to PreRound"
+  capturedObjective="Advancing spawns for faction 255 to obj [0-9]: 1 zones enabled"
+
+  # Sleep timer should be close to the PreRoundTime value
+  # in Insurgency/Saved/Config/LinuxServer/Game.ini
+  # PreRoundTime is the time you and your team sits in
+  # the transport vehicle when the round starts.
+  if [[ $LINE =~ $preRound ]]; then
+    ../helper_functions/killTimer
+    extendTimer=$( sleep 12 )
+  else
+    extendTimer=""
+  fi
+
+  if [[ $LINE =~ $capturedObjective ]]; then
+    ../helper_functions/killTimer
+    startTimer $extendtimer
+  fi
+
+done

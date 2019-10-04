@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Description ##################################################################
+# Easy interface to get the list of player names and associated Steam Ids.
+# Typically used togther with the kick script.
+
+# rconn($1)
+source ../commonUtils
+
+# Output a list of in-game player Steam Ids to a temp file
+TEMP_DIR=../logs/temp
+fileName="steamIdList"
+getPlayerList > $TEMP_DIR/$fileName.txt
+
+# Output Ids and Names in console
+input="$TEMP_DIR/$fileName.txt"
+playerList=""
+
+while IFS= read -r steamId; do
+  steamName=$( getSteamNameFromId $steamId )
+  playerList+="$steamId $steamName\n"
+done < "$input"
+
+if [[ $playerList == "" ]]; then
+	echo "No one is on the server."
+else
+	echo -ne "$playerList"
+fi

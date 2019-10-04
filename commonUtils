@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Description ##################################################################
+# Helper functions and global variables
+
+USER_DIR=/home/xxxxx
+SERVER_DIR=/home/xxxxx
+SERVER_LOG_DIR=$SERVER_DIR/sandstorm/Insurgency/Saved/Logs/Insurgency.log
+RCON_IP=127.0.0.1
+RCON_PORT=27015
+RCON_PWD=xxxxxxxxxx
+steamApiKey="xxxxxxxxxx"
+
+function rconn() {
+  rcon -H $RCON_IP -p $RCON_PORT -P $RCON_PWD $1
+}
+
+function getNumPlayers() {
+  numPlayers=$( python $USER_DIR/python-valve/tests/getSandstormServerInfo.py )
+  error=$( echo "$numPlayers" | grep -c Error ) # Expected result: "1"
+
+  if [ $error -gt 0 ]; then
+    echo "Error: Could not get number of players from API service."
+  else
+    echo $numPlayers
+  fi
+}
+
+function getSteamNameFromId() {
+  steamId=$1
+  steamName=$( python $USER_DIR/insurgency_server/services/convertSteamIdToName.py $steamId )
+  error=$( echo "$steamName" | grep -c Error ) # Expected result: "1"
+
+  if [ $error -gt 0 ]; then
+    echo "Someone"
+  else
+    echo $steamName
+  fi
+}
+
+function getPlayerList() {
+  rawPlayerList=$( rconn "listplayers" )
+  echo $rawPlayerList | grep -oP "765\d*"
+}

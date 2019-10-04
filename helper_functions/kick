@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Description ##################################################################
+# Easy interface to kick user after using the listPlayers script to grab name 
+# and Steam IDs.
+#
+# Example
+# ./kick 765xxxxxxxxxxxxxx "Rushing point after warning"
+
+# rconn($1)
+source ../commonUtils
+
+if [[ (-z $1) || (-z $2) ]]; then
+  echo "Correct usage: ./kick <id|steamID|name> \"<reason>\""
+  exit
+fi
+
+rconn "kick $1 \"$2\""
+echo -ne "\n"

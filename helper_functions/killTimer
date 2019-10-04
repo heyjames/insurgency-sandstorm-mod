@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Description ##################################################################
+# Terminates the background countdown script
+
+ps -ef | grep "countdown" | awk '{print $2}' | xargs kill -9
