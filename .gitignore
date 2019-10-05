@@ -1,1 +1,4 @@
 setEnvVars
+logs/temp/
+logs/userChat.log
+userConnections.log

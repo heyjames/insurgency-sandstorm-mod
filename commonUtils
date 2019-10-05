@@ -3,8 +3,6 @@
 # Description ##################################################################
 # Helper functions and global variables
 
-source setEnvVars
-
 #USER_DIR=/home/xxxxx
 #SERVER_DIR=/home/xxxxx
 SERVER_LOG_DIR=$SERVER_DIR/sandstorm/Insurgency/Saved/Logs/Insurgency.log
