@@ -6,6 +6,8 @@
 # $SERVER_LOG_DIR, rconn($1)
 source ../commonUtils
 
+rconn < ../config/setNewRoundProps.txt
+
 tail -n 0 -F $SERVER_LOG_DIR | \
 
 while read -r LINE; do
