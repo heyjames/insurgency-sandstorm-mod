@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Description ##################################################################
-# Forked from https://github.com/kentone/rconMessager
+# Original code forked from https://github.com/kentone/rconMessager
 
 # rconn($1), getNumPlayers(), $RCON_IP, $RCON_PORT, $RCON_PWD, $USER_DIR
 source ../commonUtils
@@ -38,7 +38,7 @@ FTPPORT=
 #This is the file that will be downloaded from the FTP server (ex. /directory1/directory2/Adverts.txt)
 FTPFILE=
 #Time between adverts (In seconds)
-INTERVAL=40
+INTERVAL=36
 #Initial value for counter
 i=1
 
