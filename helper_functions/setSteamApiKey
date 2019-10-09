@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Description ##################################################################
-# Set the Steam API Key environmental variable
-
-# $steamApiKey
-source ../commonUtils
-
-export STEAM_API_KEY=$steamApiKey

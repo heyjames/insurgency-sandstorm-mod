@@ -3,43 +3,18 @@
 # Description ##################################################################
 # Original code forked from https://github.com/kentone/rconMessager
 
-# rconn($1), getNumPlayers(), $RCON_IP, $RCON_PORT, $RCON_PWD, $USER_DIR
+# rconn($1), getNumPlayers(), $RCON_IP, $RCON_PORT, $RCON_PWD, $MOD_DIR
 source ../commonUtils
 
-#Put here your home dir (/home/username)
-#export HOME=$USER_DIR
-#This file will contain the adverts that will appear on your server (ex. /home/username/rconMessager/Adverts.txt)
-FILE=../config/adMessages.txt
+# This file will contain the adverts that will appear on your server
+FILE=$MOD_DIR/config/adMessages.txt
 
-#RCON Config
-##################################
-#IP
-HOST=$RCON_IP
-#Rcon Pass
-PASSWORD=$RCON_PWD
-#Rcon PORT
-PORT=$RCON_PORT
-#MCRCON COMMAND LINE (DO NOT MODIFY)
-#COMMAND="mcrcon -H $HOST -P $PORT -p $PASSWORD"
-COMMAND="rcon -H $RCON_IP -p  $RCON_PORT -P $RCON_PWD"
+COMMAND="rcon -H $RCON_IP -p $RCON_PORT -P $RCON_PWD"
 
-#FTP Config
-#If your server does not allow run custom scripts you can run this script on your home and download the adverts file from the game server, so all admins can edit it.
-#The script will download the file and send the lines on it over rcon
-##################################
-#Put a 1 to enable FTP fetching, put a 0 to disable
-ENABLEFTP=0
-#FTP user
-FTPUSER=
-#FTP password
-FTPPASS=
-#FTP PORT (Fill this even if it uses the default port)
-FTPPORT=
-#This is the file that will be downloaded from the FTP server (ex. /directory1/directory2/Adverts.txt)
-FTPFILE=
-#Time between adverts (In seconds)
+# Time between adverts (in seconds)
 INTERVAL=36
-#Initial value for counter
+
+# Initial value for counter
 i=1
 
 # Sleep advertisements if no one is online
@@ -50,7 +25,7 @@ function sleepIfServerEmpty() {
 	while true; do
 		if [[ $( getNumPlayers ) == 0 ]]; then
 			loopCount=$(( loopCount+1 ))
-			echo -ne "\r\033[KSleeping for $timer seconds. Looped $loopCount times..."
+			# echo -ne "\r\033[KSleeping for $timer seconds. Looped $loopCount times..."
 			sleep $timer
 		else
 			break
@@ -58,28 +33,26 @@ function sleepIfServerEmpty() {
 	done
 }
 
-#The main loop
+# The main loop
 while true
 do
-	#Retrieves the Adverts.txt so we can change it from the server
-	if [ $ENABLEFTP = 1 ]
-	then
-	wget --timeout 10 -t 3 ftp://"$FTPUSER":"$FTPPASS"@"$HOST":"FTPPORT""$FTPFILE" -O "$FILE"
-	fi
-	#refreshes the number of lines on every main loop iteration.
+	# Refreshes the number of lines on every main loop iteration.
 	FILELINES=$(wc -l < $FILE)
-	#Counter loop, sends every line of the Adverts.txt one by one to the server via rcon
+	# Counter loop, sends every line of the Adverts.txt one by one to the 
+	# server via rcon.
 	until [ $i -gt $FILELINES ]
 	do
 		sleepIfServerEmpty
 
-		#I use cut with the counter to get every line one by one on every iteration, until it reaches maximum number of lines and resets the counter to the first one
-		echo -ne "\r\033[K$(cut -f$i -d$'\n' $FILE)"
+		# I use cut with the counter to get every line one by one on every 
+		# iteration, until it reaches maximum number of lines and resets 
+		# the counter to the first one.
+		# echo -ne "\r\033[K$(cut -f$i -d$'\n' $FILE)"
 		$COMMAND "say $(cut -f$i -d$'\n' $FILE)"
-	        #Sums one to the counter
+
 		i=$(( i+1 ))
 		sleep $INTERVAL
 	done
-	#Resets the counter when the counter loops reaches $FILELINES
+	# Resets the counter when the counter loops reaches $FILELINES.
 	i=1
 done

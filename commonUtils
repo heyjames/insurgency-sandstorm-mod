@@ -3,13 +3,14 @@
 # Description ##################################################################
 # Helper functions and global variables
 
-#USER_DIR=/home/xxxxx
-#SERVER_DIR=/home/xxxxx
+USER_DIR=/home/james
+SERVER_DIR=/home/steam
+MOD_DIR=/home/james/insurgency_server
 SERVER_LOG_DIR=$SERVER_DIR/sandstorm/Insurgency/Saved/Logs/Insurgency.log
-RCON_IP=127.0.0.1
+
+RCON_PWD=xxxxx
+RCON_IP=xxxxx
 RCON_PORT=27015
-#RCON_PWD=xxxxxxxxxx
-#steamApiKey="xxxxxxxxxx"
 
 function rconn() {
   rcon -H $RCON_IP -p $RCON_PORT -P $RCON_PWD $1

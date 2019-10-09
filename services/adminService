@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# allsay="[2019.10.08-00.25.36:669][406]LogChat: Display: James(765xxxxx) Global Chat: !botcount 12"
+teamsay="[2019.10.08-00.25.43:486][813]LogChat: Display: James(765xxxxx) Team 0 Chat: !hi 1287y !hi 987 James(765xxxxx)"
+# LINE=$allsay
+
+chatMessage="LogChat: Display: "
+steamId=$( echo "$teamsay" | grep -shoP "\((.*?765.*?)\)" )
+# steamId3=$steamId
+
+echo "$steamId"
+
+# adminId="765xxxxx"
+
+# requestCommand=$( echo $teamsay | grep -oP "Chat:\s\!(.*?)\s\d\d" )
+# requestCommand=$( echo $teamsay | grep -oP "!(.*?)" )
+# echo $requestCommand
+# echo "$adminId...2"
+
+# if [[ $teamsay =~ $chatMessage ]]; then
+#   if [[ $steamId2 == $adminId ]]; then
+#     echo "$requestCommand..."
+#   else
+#     echo "Nice try."
+#   fi
+# fi
