@@ -20,10 +20,10 @@ function startTimer() {
   # First arg is $extendTimer if beginning of round
   $1
   $MOD_DIR/helper_functions/countdown &
-return
-  # Cancel Timer and set normal capture time if number of players is fewer than 2
+
+  # Cancel Timer and set normal capture time on low player count
   numPlayers=$( getNumPlayers )
-  if [ $numPlayers -le 2 ]; then
+  if [ $numPlayers -le 3 ]; then
     $MOD_DIR/helper_functions/killTimer
     rconn "gamemodeproperty ObjectiveCaptureTime 30"
     echo -e "\n$numPlayers players detected. Timer killed. Normal checkpoint timer."

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Description ##################################################################
+# Easy interface to ban user after using the listPlayers script to grab name 
+# and Steam IDs.
+#
+# Example
+# ./ban 765xxxxxxxxxxxxxx "Rushing point after warning"
+
+# rconn($1)
+source ../commonUtils
+
+if [[ (-z $1) || (-z $2) || (-z $3) ]]; then
+  echo "Correct usage: ./ban <id|steamID|name> <duration in minutes> \"<reason>\""
+  exit
+fi
+
+echo -e "ban $1 $2 \"$3\"\nsay $1 has been banned. Reason: $3" > ../logs/temp/ban.txt
+rconn < ../logs/temp/ban.txt
+echo -ne "\n"

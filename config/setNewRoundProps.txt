@@ -1,2 +1,3 @@
-gamemodeproperty MinimumEnemies 3
-gamemodeproperty MaximumEnemies 15
+gamemodeproperty MinimumEnemies 2
+gamemodeproperty MaximumEnemies 18
+

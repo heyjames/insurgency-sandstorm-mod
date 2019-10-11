@@ -8,8 +8,8 @@ SERVER_DIR=/home/steam
 MOD_DIR=/home/james/insurgency_server
 SERVER_LOG_DIR=$SERVER_DIR/sandstorm/Insurgency/Saved/Logs/Insurgency.log
 
-RCON_PWD=xxxxx
-RCON_IP=xxxxx
+RCON_PWD=xxxxxxxxxx
+RCON_IP=xxxxxxxxxx
 RCON_PORT=27015
 
 function rconn() {

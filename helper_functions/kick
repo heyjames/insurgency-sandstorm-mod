@@ -15,5 +15,6 @@ if [[ (-z $1) || (-z $2) ]]; then
   exit
 fi
 
-rconn "kick $1 \"$2\""
+echo -e "kick $1 \"$2\"\nsay $1 has been kicked. Reason: $2" > ../logs/temp/kick.txt
+rconn < ../logs/temp/kick.txt
 echo -ne "\n"

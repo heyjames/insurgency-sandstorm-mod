@@ -12,8 +12,10 @@ source ../commonUtils
 rconn < ../config/lockObjective.txt
 echo -ne "\n"
 
-# 3 minute timer
-counter=179
+# 3m timer
+#counter=179
+# 2m30s timer
+counter=148
 
 while [ $counter -gt 0 ]; do
   echo -ne "\r$counter "

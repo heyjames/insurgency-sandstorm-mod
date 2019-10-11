@@ -21,9 +21,9 @@ while read -r LINE; do
 
   # Regex Identifiers
   chatMessage="LogChat: Display: "
-  userConnected="acknowledged scenario assets loaded."
+  # userConnected="acknowledged scenario assets loaded."
+  userConnected="\[Linux\]\[EAC Server\] \[Info\]\[RegisterClient\] Client"
   userDisconnected="\[UnregisterClient\] Client: 0x([A-Za-z0-9_]*) PlayerGUID: "
-
   # Handle chat messages
   if [[ $LINE =~ $chatMessage ]]; then
     echo "$LINE" >> $MOD_DIR/logs/userChat.log
@@ -31,10 +31,16 @@ while read -r LINE; do
 
   # Handle user connects
   if [[ $LINE =~ $userConnected ]]; then
-    steamName=$( echo $LINE | grep -oP "'([^']*)'" | sed -e "s/^'//" -e "s/'$//" )
+    # steamName=$( echo $LINE | grep -oP "'([^']*)'" | sed -e "s/^'//" -e "s/'$//" )
+    steamName0=$( echo $LINE | grep -oP "PlayerName: \w+" )
+    steamId0=$( echo $LINE | grep -oP "Client: \w+ PlayerGUID\: (?:765?)[^\s]+" )
+
+    steamName=${steamName0:12}
+    steamId=${steamId0:35}
+
     displayMsg="$steamName connected."
 
-    echo "[$date] $displayMsg" >> $MOD_DIR/logs/userConnections.log
+    echo "[$date] ($steamId) $displayMsg" >> $MOD_DIR/logs/userConnections.log
     rconn "say $displayMsg"
   fi
 
@@ -49,7 +55,7 @@ while read -r LINE; do
       id="($steamId) "
     fi
 
-    echo "[$date] ${id}${displayMsg}" >> $MOD_DIR/logs/userConnections.log
+    echo "[$date] ($steamId) ${displayMsg}" >> $MOD_DIR/logs/userConnections.log
     rconn "say $displayMsg"
   fi
 done

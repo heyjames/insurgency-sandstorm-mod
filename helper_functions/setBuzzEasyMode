@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Description ##################################################################
+# Easily set new game mode properties that won't reset after a round is over.
+
+# $SERVER_LOG_DIR, rconn($1)
+source ../commonUtils
+
+buzzSteamId=xxxxxxxxxx
+
+tail -n 0 -F $SERVER_LOG_DIR | \
+
+while read -r LINE; do
+  preRound="Match State Changed from ([A-Za-z0-9_]*) to PreRound"
+
+  if [[ $LINE =~ $preRound ]]; then
+    if [[ $( getPlayerList ) == "$buzzSteamId" ]]; then
+      echo "it worked"
+      sleep 5
+      rconn < ../config/setBuzzEasyMode.txt
+  	else
+      sleep 5
+      rconn < ../config/setNewRoundProps.txt
+    fi
+  fi
+
+done
