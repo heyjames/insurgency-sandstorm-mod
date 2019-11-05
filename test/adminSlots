@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# detect when user connects, save user's steam id in a variable
+# check how many players are in the server
+# if 6 users are in the server, kick the user with the stored variable on the reason that server is full
+
+#!/bin/bash
+
+# Purpose #########################################################
+# Reads each new line from the Insurgency Sandstorm server log file
+# Handles user connect/disconnects and global chat messages and 
+# outputs to respective log files.
+
+# Required Files ##################################################
+# userChat.log
+# userConnections.log
+
+# rconn($1), getSteamNameFromId
+source ../commonUtils
+
+function allowAdminSlots() {
+  steamId=$1
+  numPlayers=$( getNumPlayers )
+
+  # echo "$( isAdmin $steamId )"
+
+  # if $( isAdmin $steamId ); then
+  # 	echo "truuuue"
+  # else
+  # 	echo "naaah"
+  # fi
+
+  # if [[ $numPlayers > 6 ]]; then
+    if $( isAdmin $steamId ); then
+      echo "you are admin"
+    else
+      $MOD_DIR/helper_functions/kick $steamId "Server full"
+    fi
+  # fi
+}
+
+# allowAdminSlots 76561197993336390
+numPlayers=$( getNumPlayers )
+error=$( echo "$numPlayers" | grep -c Error )
+if [ $error -gt 0 ]; then
+	echo "API isn't working. Exiting function..."
+else
+	echo "API is good. # of players: $numPlayers"
+fi
+# grep -c Error

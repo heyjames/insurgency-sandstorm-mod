@@ -16,18 +16,32 @@ source ../commonUtils
 
 # Locks the current objective by inceasing the timer and begins the countdown
 # as close to the timer at the bottom of the screen.
-function startTimer() {
-  # First arg is $extendTimer if beginning of round
-  $1
-  $MOD_DIR/helper_functions/countdown &
-
-  # Cancel Timer and set normal capture time on low player count
+function abortOnLowPlayerCount() {
   numPlayers=$( getNumPlayers )
   if [ $numPlayers -le 3 ]; then
     $MOD_DIR/helper_functions/killTimer
     rconn "gamemodeproperty ObjectiveCaptureTime 30"
     echo -e "\n$numPlayers players detected. Timer killed. Normal checkpoint timer."
   fi
+}
+
+function startTimer() {
+  extendTimer=$1
+  $extendtimer
+  $MOD_DIR/helper_functions/countdown &
+}
+
+function handleObjectiveLock() {
+  objType=$1
+  $MOD_DIR/helper_functions/killTimer
+
+  extendTimer=""
+  if [[ $objType == "firstObj" ]]; then
+    extendTimer=$( sleep 3 ) # Match sleep with PreRoundTimer in Game.ini
+  fi
+
+  startTimer $extendtimer
+  abortOnLowPlayerCount
 }
 
 # If timer was never stopped, stop it before this script begins.
@@ -37,23 +51,16 @@ tail -n 0 -F $SERVER_LOG_DIR | \
 
 while read -r LINE; do
   # Regex Identifiers
-  preRound="Match State Changed from ([A-Za-z0-9_]*) to PreRound"
-  capturedObjective="Advancing spawns for faction 255 to obj [0-9]: 1 zones enabled"
+  onRoundStart="Match State Changed from (GameStarting|RoundActive|PostRound) to PreRound"
+  onObjectiveCapture="Advancing spawns for faction 255 to obj [1-9]: 1 zones enabled"
 
-  # Sleep timer should be close to the PreRoundTime value
-  # in Insurgency/Saved/Config/LinuxServer/Game.ini
-  # PreRoundTime is the time you and your team sits in
-  # the transport vehicle when the round starts.
-  if [[ $LINE =~ $preRound ]]; then
-    $MOD_DIR/helper_functions/killTimer
-    extendTimer=$( sleep 12 )
-  else
-    extendTimer=""
-  fi
+  if [[ ($LINE =~ $onRoundStart) || ($LINE =~ $onObjectiveCapture) ]]; then
+    objType=""
+    if [[ $LINE =~ $onRoundStart ]]; then
+      objType="firstObj"
+    fi
 
-  if [[ $LINE =~ $capturedObjective ]]; then
-    $MOD_DIR/helper_functions/killTimer
-    startTimer $extendtimer
+    handleObjectiveLock $objType
   fi
 
 done

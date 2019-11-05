@@ -12,6 +12,28 @@
 # rconn($1), getSteamNameFromId
 source ../commonUtils
 
+function allowPriorityPlayer() {
+  date=$( TZ=America/Los_Angeles date +'%Y-%m-%d_%H:%M' )
+  steamId=$1
+  numPlayers=$( getNumPlayers )
+  error=$( echo "$numPlayers" | grep -c Error )
+
+  if [ $error -gt 0 ]; then
+    echo "API isn't working. Exiting function..."
+    return
+  fi
+
+  sleep 2
+
+  # Kick non-priority players past the 6th player.
+  if [[ $numPlayers > 6 ]]; then
+    if $( ! isPriorityPlayer $steamId ); then
+      $MOD_DIR/helper_functions/autoKick $steamId "Server full"
+      echo "[$date] ($steamId) Kicked (Server full)" >> $MOD_DIR/logs/userConnections.log
+    fi
+  fi
+}
+
 # Default Insurgency Log File
 tail -n 0 -F $SERVER_LOG_DIR | \
 
@@ -24,6 +46,7 @@ while read -r LINE; do
   # userConnected="acknowledged scenario assets loaded."
   userConnected="\[Linux\]\[EAC Server\] \[Info\]\[RegisterClient\] Client"
   userDisconnected="\[UnregisterClient\] Client: 0x([A-Za-z0-9_]*) PlayerGUID: "
+
   # Handle chat messages
   if [[ $LINE =~ $chatMessage ]]; then
     echo "$LINE" >> $MOD_DIR/logs/userChat.log
@@ -32,21 +55,30 @@ while read -r LINE; do
   # Handle user connects
   if [[ $LINE =~ $userConnected ]]; then
     # steamName=$( echo $LINE | grep -oP "'([^']*)'" | sed -e "s/^'//" -e "s/'$//" )
-    steamName0=$( echo $LINE | grep -oP "PlayerName: \w+" )
+    steamName0=$( echo $LINE | grep -oP "PlayerName: ([^\"]).+" )
+
     steamId0=$( echo $LINE | grep -oP "Client: \w+ PlayerGUID\: (?:765?)[^\s]+" )
 
-    steamName=${steamName0:12}
+    steamName=${steamName0:12:-1}
     steamId=${steamId0:35}
 
     displayMsg="$steamName connected."
 
     echo "[$date] ($steamId) $displayMsg" >> $MOD_DIR/logs/userConnections.log
-    rconn "say $displayMsg"
+    
+    # Stealth connect
+    if [[ ! $steamId == "76561197993336390" ]]; then
+      rconn "say $displayMsg"
+    fi
+
+    # Allow admins after full server
+    allowPriorityPlayer $steamId
   fi
 
   # Handle user disconnects
   if [[ $LINE =~ $userDisconnected ]]; then
     steamId=$( echo $LINE | grep -oP "765\d*" )
+
     steamName=$( getSteamNameFromId $steamId )
     displayMsg="$steamName disconnected."
 
@@ -56,6 +88,10 @@ while read -r LINE; do
     fi
 
     echo "[$date] ($steamId) ${displayMsg}" >> $MOD_DIR/logs/userConnections.log
-    rconn "say $displayMsg"
+
+    # Stealth disconnect
+    if [[ ! $steamId == "76561197993336390" ]]; then
+      rconn "say $displayMsg"
+    fi
   fi
 done

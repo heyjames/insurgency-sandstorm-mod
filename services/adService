@@ -11,48 +11,60 @@ FILE=$MOD_DIR/config/adMessages.txt
 
 COMMAND="rcon -H $RCON_IP -p $RCON_PORT -P $RCON_PWD"
 
-# Time between adverts (in seconds)
-INTERVAL=36
+# Time between adverts (in seconds). Default: 32
+INTERVAL=32
 
 # Initial value for counter
 i=1
 
 # Sleep advertisements if no one is online
-function sleepIfServerEmpty() {
-	loopCount=0
-	timer=30
+# function sleepIfServerEmpty() {
+#   loopCount=0
+#   timer=30
 
-	while true; do
-		if [[ $( getNumPlayers ) == 0 ]]; then
-			loopCount=$(( loopCount+1 ))
-			# echo -ne "\r\033[KSleeping for $timer seconds. Looped $loopCount times..."
-			sleep $timer
-		else
-			break
-		fi
-	done
-}
+#   while true; do
+#     if [[ $( getNumPlayers ) == 0 ]]; then
+#       loopCount=$(( loopCount+1 ))
+#       # echo -ne "\r\033[KSleeping for $timer seconds. Looped $loopCount times..."
+#       sleep $timer
+#     else
+#       break
+#     fi
+#   done
+# }
 
-# The main loop
-while true
-do
-	# Refreshes the number of lines on every main loop iteration.
-	FILELINES=$(wc -l < $FILE)
-	# Counter loop, sends every line of the Adverts.txt one by one to the 
-	# server via rcon.
-	until [ $i -gt $FILELINES ]
-	do
-		sleepIfServerEmpty
+tail -n 0 -F $SERVER_LOG_DIR | \
 
-		# I use cut with the counter to get every line one by one on every 
-		# iteration, until it reaches maximum number of lines and resets 
-		# the counter to the first one.
-		# echo -ne "\r\033[K$(cut -f$i -d$'\n' $FILE)"
-		$COMMAND "say $(cut -f$i -d$'\n' $FILE)"
+while read -r LINE; do
+  onRoundStart="Match State Changed from PreRound to RoundActive"
+  onObjectiveCapture="Advancing spawns for faction 255 to obj [1-9]: 1 zones enabled"
 
-		i=$(( i+1 ))
-		sleep $INTERVAL
-	done
-	# Resets the counter when the counter loops reaches $FILELINES.
-	i=1
+  if [[ ($LINE =~ $onRoundStart) || ($LINE =~ $onObjectiveCapture) ]]; then
+    END=3
+    x=$END
+    while [ $x -gt 0 ];
+    do
+      # Refreshes the number of lines on every main loop iteration.
+      FILELINES=$(wc -l < $FILE)
+      # Counter loop, sends every line of the Adverts.txt one by one to the 
+      # server via rcon.
+      until [ $i -gt $FILELINES ]
+      do
+        # sleepIfServerEmpty
+
+        # I use cut with the counter to get every line one by one on every 
+        # iteration, until it reaches maximum number of lines and resets 
+        # the counter to the first one.
+        # echo -ne "\r\033[K$(cut -f$i -d$'\n' $FILE)"
+        $COMMAND "say $(cut -f$i -d$'\n' $FILE)"
+
+        i=$(( i+1 ))
+        sleep $INTERVAL
+      done
+
+      x=$(( $x-1 ))
+      # Resets the counter when the counter loops reaches $FILELINES.
+      i=1
+    done
+  fi
 done

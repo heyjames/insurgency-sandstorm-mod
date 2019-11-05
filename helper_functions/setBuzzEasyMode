@@ -6,16 +6,18 @@
 # $SERVER_LOG_DIR, rconn($1)
 source ../commonUtils
 
-buzzSteamId=xxxxxxxxxx
+buzzSteamId=76561198143070324
+# buzzSteamId=76561197993336390
 
 tail -n 0 -F $SERVER_LOG_DIR | \
 
 while read -r LINE; do
   preRound="Match State Changed from ([A-Za-z0-9_]*) to PreRound"
+  capturedObjective="Advancing spawns for faction 255 to obj [0-9]: 1 zones enabled"
 
+  # if [[ ($LINE =~ $preRound) || ($LINE =~ $capturedObjective) ]]; then
   if [[ $LINE =~ $preRound ]]; then
-    if [[ $( getPlayerList ) == "$buzzSteamId" ]]; then
-      echo "it worked"
+    if [[ $( getPlayerList ) =~ "$buzzSteamId" ]]; then
       sleep 5
       rconn < ../config/setBuzzEasyMode.txt
   	else

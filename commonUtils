@@ -3,14 +3,17 @@
 # Description ##################################################################
 # Helper functions and global variables
 
-USER_DIR=/home/james
-SERVER_DIR=/home/steam
-MOD_DIR=/home/james/insurgency_server
+USER_DIR=/home/xxxxxxxxxx
+SERVER_DIR=/home/xxxxxxxxxx
+MOD_DIR=/home/xxxxxxxxxx/insurgency_server
 SERVER_LOG_DIR=$SERVER_DIR/sandstorm/Insurgency/Saved/Logs/Insurgency.log
+ADMIN_DIR=$SERVER_DIR/sandstorm/Insurgency/Config/Server/Admins.txt
+PRIORITY_DIR=$MOD_DIR/config/priorityPlayers.txt
 
 RCON_PWD=xxxxxxxxxx
 RCON_IP=xxxxxxxxxx
-RCON_PORT=27015
+RCON_PORT=xxxxxxxxxx
+STEAM_API_KEY=xxxxxxxxxx
 
 function rconn() {
   rcon -H $RCON_IP -p $RCON_PORT -P $RCON_PWD $1
@@ -42,4 +45,22 @@ function getSteamNameFromId() {
 function getPlayerList() {
   rawPlayerList=$( rconn "listplayers" )
   echo $rawPlayerList | grep -oP "765\d*"
+}
+
+function isAdmin() {
+  steamId=$1
+  if grep -Fxq "$steamId" "$ADMIN_DIR"; then
+    return 0 # true
+  else
+    return 1 # false
+  fi
+}
+
+function isPriorityPlayer() {
+  steamId=$1
+  if grep -Fxq "$steamId" "$PRIORITY_DIR"; then
+    return 0 # true
+  else
+    return 1 # false
+  fi
 }

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source ../commonUtils
+
+rconn < ../config/announceReadRules.txt

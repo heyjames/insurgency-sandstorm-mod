@@ -1,0 +1,41 @@
+#!/bin/bash
+
+source ../commonUtils
+
+date=$( TZ=America/Los_Angeles date +'%Y-%m-%d_%H:%M' )
+
+#id="76561197970545369"
+#id=76561198026592884 # Clone PAPA
+
+#LINE="[2019.10.12-08.23.24:688][711]LogEasyAntiCheatServer: [01:23:24][Linux][EAC Server] [Info][RegisterClient] Client: 0x7fd56d2373c0 PlayerGUID: 76560000000000000 PlayerIP: 11.111.1.111 OwnerGUID: 76560000000000000 PlayerName: Çlone_PÄPA"
+LINE="[2019.10.22-07.07.39:785][142]LogEasyAntiCheatServer: [00:07:39][Linux][EAC Server] [Info][UnregisterClient] Client: 0x7f4b8898b380 PlayerGUID: 76561197970545369"
+userConnected="\[Linux\]\[EAC Server\] \[Info\]\[RegisterClient\] Client"
+userDisconnected="\[UnregisterClient\] Client: 0x([A-Za-z0-9_]*) PlayerGUID: "
+
+if [[ $LINE =~ $userConnected ]]; then
+	steamName0=$( echo $LINE | grep -oP "PlayerName: ([^\"]).+" )
+	steamId0=$( echo $LINE | grep -oP "Client: \w+ PlayerGUID\: (?:765?)[^\s]+" )
+	# echo $steamName0
+	steamName=${steamName0:12}
+	steamId=${steamId0:35}
+
+	displayMsg="$steamName connected."
+	echo "[$date] ($steamId) $displayMsg" >> $MOD_DIR/insurgency_server/logs/userConnections.log
+	rconn "say $displayMsg"
+fi
+
+if [[ $LINE =~ $userDisconnected ]]; then
+    steamId=$( echo $LINE | grep -oP "765\d.+" )
+    steamName=$( getSteamNameFromId $steamId )
+    # steamName2=${steamName:2:-1}
+    displayMsg="$steamName disconnected."
+
+    # Default steamName to Someone if getSteamNameFromId() fails
+    if [[ $steamName == "Someone" ]]; then
+      id="($steamId) "
+    fi
+ 	
+	echo "[$date] ($steamId) ${displayMsg}" 
+    # echo "[$date] ($steamId) ${displayMsg}" >> $MOD_DIR/logs/userConnections.log
+    # rconn "say $displayMsg"
+  fi

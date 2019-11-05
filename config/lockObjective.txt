@@ -1,1 +1,1 @@
-gamemodeproperty ObjectiveCaptureTime 800
+gamemodeproperty ObjectiveCaptureTime 300

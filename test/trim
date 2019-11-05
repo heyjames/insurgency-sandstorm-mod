@@ -1,0 +1,5 @@
+#!/bin/bash
+
+steamName="PlayerName: ForeverFidel"
+trimmed=${steamName:12}
+echo "$trimmed..."

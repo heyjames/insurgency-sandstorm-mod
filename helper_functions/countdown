@@ -15,7 +15,9 @@ echo -ne "\n"
 # 3m timer
 #counter=179
 # 2m30s timer
-counter=148
+counter=149
+# 30s timer
+# counter=29
 
 while [ $counter -gt 0 ]; do
   echo -ne "\r$counter "
