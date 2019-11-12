@@ -16,7 +16,7 @@ source ../commonUtils
 
 # Locks the current objective by inceasing the timer and begins the countdown
 # as close to the timer at the bottom of the screen.
-function abortOnLowPlayerCount() {
+function normalCaptureOnLowPlayerCount() {
   numPlayers=$( getNumPlayers )
   if [ $numPlayers -le 3 ]; then
     $MOD_DIR/helper_functions/killTimer
@@ -41,13 +41,13 @@ function handleObjectiveLock() {
   fi
 
   startTimer $extendtimer
-  abortOnLowPlayerCount
+  normalCaptureOnLowPlayerCount
 }
 
 # If timer was never stopped, stop it before this script begins.
 $MOD_DIR/helper_functions/killTimer
 
-tail -n 0 -F $SERVER_LOG_DIR | \
+tail -n 0 -F $SERVER_LOG_DIR 2>&1 | \
 
 while read -r LINE; do
   # Regex Identifiers

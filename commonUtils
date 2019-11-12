@@ -15,9 +15,9 @@ RCON_IP=xxxxxxxxxx
 RCON_PORT=xxxxxxxxxx
 STEAM_API_KEY=xxxxxxxxxx
 
-function rconn() {
-  rcon -H $RCON_IP -p $RCON_PORT -P $RCON_PWD $1
-}
+# function rconn() {
+#   rcon -H $RCON_IP -p $RCON_PORT -P $RCON_PWD $1
+# }
 
 function getNumPlayers() {
   numPlayers=$( python $USER_DIR/python-valve/tests/getSandstormServerInfo.py )
@@ -42,10 +42,10 @@ function getSteamNameFromId() {
   fi
 }
 
-function getPlayerList() {
-  rawPlayerList=$( rconn "listplayers" )
-  echo $rawPlayerList | grep -oP "765\d*"
-}
+# function getPlayerList() {
+#   rawPlayerList=$( rconn "listplayers" )
+#   echo $rawPlayerList | grep -oP "765\d*"
+# }
 
 function isAdmin() {
   steamId=$1

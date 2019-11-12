@@ -12,30 +12,30 @@
 # rconn($1), getSteamNameFromId
 source ../commonUtils
 
-function allowPriorityPlayer() {
-  date=$( TZ=America/Los_Angeles date +'%Y-%m-%d_%H:%M' )
-  steamId=$1
-  numPlayers=$( getNumPlayers )
-  error=$( echo "$numPlayers" | grep -c Error )
+# function allowPriorityPlayer() {
+#   date=$( TZ=America/Los_Angeles date +'%Y-%m-%d_%H:%M' )
+#   steamId=$1
+#   numPlayers=$( getNumPlayers )
+#   error=$( echo "$numPlayers" | grep -c Error )
 
-  if [ $error -gt 0 ]; then
-    echo "API isn't working. Exiting function..."
-    return
-  fi
+#   if [ $error -gt 0 ]; then
+#     echo "API isn't working. Exiting function..."
+#     return
+#   fi
 
-  sleep 2
+#   sleep 2
 
-  # Kick non-priority players past the 6th player.
-  if [[ $numPlayers > 6 ]]; then
-    if $( ! isPriorityPlayer $steamId ); then
-      $MOD_DIR/helper_functions/autoKick $steamId "Server full"
-      echo "[$date] ($steamId) Kicked (Server full)" >> $MOD_DIR/logs/userConnections.log
-    fi
-  fi
-}
+#   # Kick non-priority players past the 6th player.
+#   if [[ $numPlayers > 6 ]]; then
+#     if $( ! isPriorityPlayer $steamId ); then
+#       $MOD_DIR/helper_functions/autoKick $steamId "Server full"
+#       echo "[$date] ($steamId) Kicked (Server full)" >> $MOD_DIR/logs/userConnections.log
+#     fi
+#   fi
+# }
 
 # Default Insurgency Log File
-tail -n 0 -F $SERVER_LOG_DIR | \
+tail -n 0 -F $SERVER_LOG_DIR 2>&1 | \
 
 # Main loop
 while read -r LINE; do
@@ -67,12 +67,12 @@ while read -r LINE; do
     echo "[$date] ($steamId) $displayMsg" >> $MOD_DIR/logs/userConnections.log
     
     # Stealth connect
-    if [[ ! $steamId == "76561197993336390" ]]; then
-      rconn "say $displayMsg"
-    fi
+    # if [[ ! $steamId == "76561197993336390" ]]; then
+      # rconn "say $displayMsg"
+    # fi
 
     # Allow admins after full server
-    allowPriorityPlayer $steamId
+    # allowPriorityPlayer $steamId
   fi
 
   # Handle user disconnects
@@ -90,8 +90,8 @@ while read -r LINE; do
     echo "[$date] ($steamId) ${displayMsg}" >> $MOD_DIR/logs/userConnections.log
 
     # Stealth disconnect
-    if [[ ! $steamId == "76561197993336390" ]]; then
-      rconn "say $displayMsg"
-    fi
+    # if [[ ! $steamId == "76561197993336390" ]]; then
+      # rconn "say $displayMsg"
+    # fi
   fi
 done

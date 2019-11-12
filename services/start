@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# A rewrite of all services into one. Doesn't work because the advertisement
+# function has a loop that blocks the rest of the app to run. Saved for 
+# possible rewrite in JavaScript.
+
 source ../commonUtils
 
 function allowPriorityPlayer() {
@@ -144,7 +148,7 @@ while read -r LINE; do
   # onRestartRound="Match State Changed from RoundActive to PreRound"
   # onNextRound="Match State Changed from PostRound to PreRound"
   onRoundStart="Match State Changed from (GameStarting|RoundActive|PostRound) to PreRound"
-  onObjectiveCapture="Advancing spawns for faction 255 to obj [0-9]: 1 zones enabled"
+  onObjectiveCapture="Advancing spawns for faction 255 to obj [1-9]: 1 zones enabled"
 
   if [[ $LINE =~ $chatMessage ]]; then
     # handleChatMessage

@@ -33,7 +33,7 @@ i=1
 #   done
 # }
 
-tail -n 0 -F $SERVER_LOG_DIR | \
+tail -n 0 -F $SERVER_LOG_DIR 2>&1 | \
 
 while read -r LINE; do
   onRoundStart="Match State Changed from PreRound to RoundActive"
