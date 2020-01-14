@@ -1,0 +1,5 @@
+�8� NetID			 | IP			 | Score		 |
+===============================================================================
+256	 | James		 | 76500000000000000	 | 12.345.678.90	 | 0		 | 0	 | Observer		 | INVALID		 | 		 | 0		 | 0	 | Commander	 | INVALID		 | 		 | 0		 | 0	 | Marksman		 | INVALID		 | 		 | 0		 | 0	 | Advisor		 | INVALID		 | 		 | 0		 | 0	 | Demolitions	 | INVALID		 | 		 | 0		 | 0	 | Gunner		 | INVALID		 | 		 | 0	 | 0	 | Breacher		 | INVALID		 | 		 | 0		 | 
+1/8 Player(s)
+1. James
