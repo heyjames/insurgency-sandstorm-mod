@@ -1,0 +1,6 @@
+gamemodeproperty ObjectiveCaptureTime 1
+gamemodeproperty MinimumEnemies 1
+gamemodeproperty MaximumEnemies 1
+gamemodeproperty DefendTimer 2
+gamemodeproperty GameStartingIntermissionTime 6
+gamemodeproperty DefendTimerFinal 15

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+cd ~/insurgency_server2/logs
+
+function getNewFilename() {
+  set -- userConnections_*.log
+  # now $1, $2... contains the files from lowest version to highest
+  shift "$(($# - 1))"
+  lastFile=$1
+  lastFileNum=$( echo $lastFile | grep -oP '\d+' )
+  nextFileNum=$((lastFileNum+1))
+
+  echo "userConnections_${nextFileNum}"
+}
+
+newFilename=$( getNewFilename )
+
+LOG_FILENAME=userConnections.log
+LOG_PATH=~/insurgency_server2/logs/$LOG_FILENAME
+numLines=$( wc -l < $LOG_PATH )
+lineLimit=1000
+
+if [ $numLines -ge $lineLimit ]; then
+  $( cp ~/insurgency_server2/logs/userConnections.log ~/insurgency_server2/logs/${newFilename}.log )
+  $( > $LOG_FILENAME )
+  exit
+fi
+
+exit

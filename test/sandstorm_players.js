@@ -7,30 +7,30 @@ start();
 
 function start() {
   startConnTimer();
-  rcon.connect("11.11.11.11", 27015, "yourRconPassword", onConnected);
+  rcon.connect("11.11.111.111", 27015, "yourRconPassword", onConnected);
 }
 
 // Try connecting for 5 seconds.
 function startConnTimer() {
-  connTimer = setTimeout( () => {
+  connTimer = setTimeout(() => {
     console.log("Connection timed out. Server didn't respond.");
     process.exit(0);
   }, 6000);
 }
 
-function onConnected(err, response){
+function onConnected(err, response) {
   clearTimeout(connTimer);
 
   if (err) { console.error(err); return; }
   console.log("Connected.");
-  
-  rcon.sendCommand("listplayers", function(err, response){
+
+  rcon.sendCommand("listplayers", function (err, response) {
     // const countBySteamId = (result.match(/765/g) || []).length;
     getPlayerInfo(response.data);
 
     process.exit(0);
   });
-  
+
   rcon.end();
 }
 
@@ -54,7 +54,7 @@ function getPlayerInfo(str) {
     myJsonObj["numPlayers"] = playerCount;
 
     let arr = [];
-    for (let i=0; i<playerCount; i++) {
+    for (let i = 0; i < playerCount; i++) {
       let obj = {};
       obj["name"] = namesArray[i];
       obj["steamId64"] = player64Array[i];
@@ -68,7 +68,7 @@ function getPlayerInfo(str) {
   // console.log(myJsonObj);
 
   console.log(myJsonObj.numPlayers + "/8 Player(s)");
-  for (i=0; i<myJsonObj.numPlayers; i++) {
-    console.log(i+1 + ". " + myJsonObj.players[i].name);
+  for (i = 0; i < myJsonObj.numPlayers; i++) {
+    console.log(i + 1 + ". " + myJsonObj.players[i].name);
   }
 }

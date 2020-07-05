@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ (-z $1) ]]; then
+  echo "Please enter a string argument"
+  exit
+fi
+
+if grep -qi $1 ~/insurgency_server/logs/userConnections_* ~/insurgency_server2/logs/userConnections_*; then
+  echo "found"
+else
+  echo "not found"
+fi
