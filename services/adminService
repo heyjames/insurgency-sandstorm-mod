@@ -1,20 +1,27 @@
 #!/bin/bash
 
-# allsay="[2019.10.08-00.25.36:669][406]LogChat: Display: James(765xxxxx) Global Chat: !botcount 12"
-teamsay="[2019.10.08-00.25.43:486][813]LogChat: Display: James(765xxxxx) Team 0 Chat: !hi 1287y !hi 987 James(765xxxxx)"
+teamsay="[2019.10.08-00.25.36:669][406]LogChat: Display: James(765123413412341234) Global Chat: !botcount 12 James(765123413412341236) !botcount 14"
+# teamsay="[2019.10.08-00.25.43:486][813]LogChat: Display: James(765123413412341234) Team 0 Chat: !hi 1287y !hi 987 James(765123413412341236)"
 # LINE=$allsay
 
 chatMessage="LogChat: Display: "
-steamId=$( echo "$teamsay" | grep -shoP "\((.*?765.*?)\)" )
+steamId=$( echo "$teamsay" | grep -shoP "\((.*?765.*?)\)" | head -n1 )
 # steamId3=$steamId
 
-echo "$steamId"
+steamId2=${steamId:1:-1}
 
-# adminId="765xxxxx"
+echo "$steamId2"
+adminId="765123413412341234"
 
-# requestCommand=$( echo $teamsay | grep -oP "Chat:\s\!(.*?)\s\d\d" )
+if [[ "$adminId" == "$steamId2" ]]; then
+	echo "You are admin."
+else
+	echo "Intruder alert."
+fi
+
+requestCommand=$( echo $teamsay | grep -oP "Chat:\s\!(.*?)\s\d\d" )
 # requestCommand=$( echo $teamsay | grep -oP "!(.*?)" )
-# echo $requestCommand
+echo $requestCommand
 # echo "$adminId...2"
 
 # if [[ $teamsay =~ $chatMessage ]]; then
